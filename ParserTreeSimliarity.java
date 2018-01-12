@@ -52,7 +52,10 @@ class ParserTreeSimliarity {
     		if(t1.equals(t2)) {
       			System.out.println("Tree1 and Tree 2 Simliarity: 100 % ");
       		}else {
-				;
+				ArrayList<String> t1_value = new ArrayList<String>();
+    			ArrayList<String> t2_value = new ArrayList<String>();
+    			t1_value = bfs(t1);
+    			t2_value = bfs(t2);
       		}
     		System.out.println();
 	    }
@@ -77,5 +80,39 @@ class ParserTreeSimliarity {
 		int len = child.length;
 		System.out.println(node.value());
 		for(int i = 0; i < len; i++) dfs(child[i]);
-	}  
+	}
+
+	public static ArrayList<String> bfs(Tree node){
+		LinkedList<Tree> queue_value = new LinkedList<Tree>();
+	    LinkedList<Integer> queue_level = new LinkedList<Integer>();
+	    Tree present;
+	    Tree child[];
+	    int lv;
+	    Integer lev = new Integer(0);
+	    
+	    ArrayList<String> result = new ArrayList<String>();
+	    ArrayList<Integer> level = new ArrayList<Integer>();
+	    queue_value.offer(node);
+	    queue_level.offer(lev);
+
+	    while(!queue_value.isEmpty()){
+	      present = queue_value.poll();
+	      lv = queue_level.poll().intValue();
+	      System.out.println("level" + lv + " value : " + present.value());
+	      result.add(present.value());
+	      level.add(lv);
+	      child = present.children();
+	      lev = new Integer(lv + 1);
+
+	      for(int i = 0; i < child.length; i++) { 
+	        if(!child[i].isLeaf()) {
+	          queue_value.offer(child[i]);
+	          queue_level.offer(lev);
+	        }
+	      }
+	    }
+
+	    System.out.println();
+	    return result;	
+	}
 }
