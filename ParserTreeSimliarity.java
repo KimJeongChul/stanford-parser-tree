@@ -48,6 +48,12 @@ class ParserTreeSimliarity {
 
 	    	Tree t1 = conversionTree(lp, gsf, sentence1);
     		Tree t2 = conversionTree(lp, gsf, sentence2);
+    		
+    		if(t1.equals(t2)) {
+      			System.out.println("Tree1 and Tree 2 Simliarity: 100 % ");
+      		}else {
+				;
+      		}
     		System.out.println();
 	    }
  	}
@@ -64,5 +70,12 @@ class ParserTreeSimliarity {
 
 	    System.out.println();
 	    return parse;
+	}
+
+	public static void dfs(Tree node) {
+		Tree[] child = node.children();
+		int len = child.length;
+		System.out.println(node.value());
+		for(int i = 0; i < len; i++) dfs(child[i]);
 	}  
 }
