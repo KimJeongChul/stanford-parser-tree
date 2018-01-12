@@ -18,7 +18,57 @@ import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
 
 import edu.stanford.nlp.util.*;
 
-class ParserTreeSimliarity {
+public class ParserTreeSimliarity {
+	public static class BFS {
+		private final Tree tree;
+		private ArrayList<String> value;
+	    private ArrayList<Integer> level;
+
+		public BFS(Tree tree) {
+			this.tree = tree;
+			this.value = new ArrayList<String>();
+			this.level =  new ArrayList<Integer>();
+		}
+
+		public ArrayList<String> getValue() {
+			return this.value;
+		}
+
+		public ArrayList<Integer> getLevel() {
+			return this.level;
+		}
+
+		public void traverse(){
+			LinkedList<Tree> queue_value = new LinkedList<Tree>();
+			LinkedList<Integer> queue_level = new LinkedList<Integer>();
+			
+			Tree present;
+		    Tree child[];
+		    
+		    int lv;
+		    Integer lev = new Integer(0);
+
+		    queue_value.offer(this.tree);
+	    	queue_level.offer(lev);
+
+	    	while(!queue_value.isEmpty()){
+				present = queue_value.poll();
+				lv = queue_level.poll().intValue();
+				System.out.println("level" + lv + " value : " + present.value());
+				this.value.add(present.value());
+				this.level.add(lv);
+				child = present.children();
+				lev = new Integer(lv + 1);
+
+				for(int i = 0; i < child.length; i++) { 
+					if(!child[i].isLeaf()) {
+					  queue_value.offer(child[i]);
+					  queue_level.offer(lev);
+					}
+				}
+		    }
+		}
+	} 
 	public static void main(String[] args) {
 		String parserModel = "edu/stanford/nlp/models/lexparser/englishRNN.ser.gz";
 	    if (args.length > 0) {
@@ -52,10 +102,18 @@ class ParserTreeSimliarity {
     		if(t1.equals(t2)) {
       			System.out.println("Tree1 and Tree 2 Simliarity: 100 % ");
       		}else {
-				ArrayList<String> t1_value = new ArrayList<String>();
-    			ArrayList<String> t2_value = new ArrayList<String>();
-    			t1_value = bfs(t1);
-    			t2_value = bfs(t2);
+    			BFS bfs1 = new BFS(t1);
+    			BFS bfs2 = new BFS(t2);
+    			
+    			bfs1.traverse();
+    			bfs2.traverse();
+				ArrayList<String> t1_value = bfs1.getValue();
+				ArrayList<String> t2_value = bfs2.getValue();
+
+				ArrayList<Integer> t1_level = bfs1.getLevel();
+				ArrayList<Integer> t2_level = bfs2.getLevel();
+
+    			System.out.println(t1_value);
       		}
     		System.out.println();
 	    }
@@ -80,39 +138,5 @@ class ParserTreeSimliarity {
 		int len = child.length;
 		System.out.println(node.value());
 		for(int i = 0; i < len; i++) dfs(child[i]);
-	}
-
-	public static ArrayList<String> bfs(Tree node){
-		LinkedList<Tree> queue_value = new LinkedList<Tree>();
-	    LinkedList<Integer> queue_level = new LinkedList<Integer>();
-	    Tree present;
-	    Tree child[];
-	    int lv;
-	    Integer lev = new Integer(0);
-	    
-	    ArrayList<String> result = new ArrayList<String>();
-	    ArrayList<Integer> level = new ArrayList<Integer>();
-	    queue_value.offer(node);
-	    queue_level.offer(lev);
-
-	    while(!queue_value.isEmpty()){
-	      present = queue_value.poll();
-	      lv = queue_level.poll().intValue();
-	      System.out.println("level" + lv + " value : " + present.value());
-	      result.add(present.value());
-	      level.add(lv);
-	      child = present.children();
-	      lev = new Integer(lv + 1);
-
-	      for(int i = 0; i < child.length; i++) { 
-	        if(!child[i].isLeaf()) {
-	          queue_value.offer(child[i]);
-	          queue_level.offer(lev);
-	        }
-	      }
-	    }
-
-	    System.out.println();
-	    return result;	
 	}
 }
