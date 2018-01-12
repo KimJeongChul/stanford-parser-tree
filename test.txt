@@ -1,4 +1,0 @@
-My dog also likes eating sausage.
-My dog loves staying in home.
-If the button is pressed, the LED turns on.
-If AWRITE is asserted, the transaction ends.
