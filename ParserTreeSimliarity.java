@@ -46,8 +46,23 @@ class ParserTreeSimliarity {
 	    	List<HasWord> sentence1 = ls.get(i);
 	    	List<HasWord> sentence2 = ls.get(i+1);
 
-	    	System.out.println(sentence1);
-	    	System.out.println(sentence2);
+	    	Tree t1 = conversionTree(lp, gsf, sentence1);
+    		Tree t2 = conversionTree(lp, gsf, sentence2);
+    		System.out.println();
 	    }
  	}
+
+ 	public static Tree conversionTree(LexicalizedParser lp, GrammaticalStructureFactory gsf ,List<HasWord> sentence) {
+	    System.out.println(sentence);
+	    Tree parse = lp.apply(sentence);
+	    parse.pennPrint();
+
+	    GrammaticalStructure gs = gsf.newGrammaticalStructure(parse);
+	    Collection tdl = gs.typedDependenciesCCprocessed();
+	    System.out.println("Tree number of node : " + tdl.size());
+	    System.out.println("Tree Depth : " + parse.depth());
+
+	    System.out.println();
+	    return parse;
+	}  
 }
