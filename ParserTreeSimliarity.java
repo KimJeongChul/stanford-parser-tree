@@ -28,4 +28,26 @@ class ParserTreeSimliarity {
 	      parserTree(lp, testFile);
 	    }
  	}
+
+ 	public static void parserTree(LexicalizedParser lp, String filename) {
+ 		TreebankLanguagePack tlp = lp.treebankLanguagePack(); // a PennTreebankLanguagePack for English
+	    GrammaticalStructureFactory gsf = null;
+	    if (tlp.supportsGrammaticalStructures()) {
+	      gsf = tlp.grammaticalStructureFactory();
+	    }
+
+	    List<List<HasWord>> ls = new ArrayList<List<HasWord>>();
+
+	    for (List<HasWord> sentence : new DocumentPreprocessor(filename)) {
+	      ls.add(sentence);
+	    }
+
+	    for(int i = 0; i < ls.size() ; i += 2) {
+	    	List<HasWord> sentence1 = ls.get(i);
+	    	List<HasWord> sentence2 = ls.get(i+1);
+
+	    	System.out.println(sentence1);
+	    	System.out.println(sentence2);
+	    }
+ 	}
 }
