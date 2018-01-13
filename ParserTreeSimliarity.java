@@ -92,9 +92,9 @@ public class ParserTreeSimliarity {
 	      ls.add(sentence);
 	    }
 
-	    for(int i = 0; i < ls.size() ; i += 2) {
-	    	List<HasWord> sentence1 = ls.get(i);
-	    	List<HasWord> sentence2 = ls.get(i+1);
+	    for(int idx = 0; idx < ls.size() ; idx += 2) {
+	    	List<HasWord> sentence1 = ls.get(idx);
+	    	List<HasWord> sentence2 = ls.get(idx + 1);
 
 	    	Tree t1 = conversionTree(lp, gsf, sentence1);
     		Tree t2 = conversionTree(lp, gsf, sentence2);
@@ -113,7 +113,24 @@ public class ParserTreeSimliarity {
 				ArrayList<Integer> t1_level = bfs1.getLevel();
 				ArrayList<Integer> t2_level = bfs2.getLevel();
 
-    			System.out.println(t1_value);
+    			System.out.println("[*] Compare to level for Tree 1 and Tree 2");
+    			int equal = 0;
+				for(int i = 0; i < t1_value.size(); i++ ) {
+					int lv1 = t1_level.get(i);
+					for(int j = 0; j < t2_value.size(); j++ ) {
+						int lv2 = t2_level.get(j);
+						if(lv1 == lv2 || (lv1+1) == lv2 || lv1 == (lv2+1)) {
+							if(t1_value.get(i).equals(t2_value.get(j))) {
+              					System.out.println(" -  Equal level : "+ lv1 +" result 1 : [" + j + "] :"  + t1_value.get(i) + " result 2 : [" + i +"] :" + t2_value.get(j));
+              					equal +=  1;
+              					break;
+            				}
+						}
+					}
+				}
+				int mean_num_node = (t1_value.size() + t2_value.size()) / 2;
+				float simliarity = (equal * 100) / mean_num_node;
+				System.out.println("Tree1 and Tree 2 Simliarity: "+ simliarity +" % ");
       		}
     		System.out.println();
 	    }
