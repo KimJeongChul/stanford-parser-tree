@@ -37,11 +37,16 @@ This software requires Java 8 (JDK 1.8.0+).  (You must have installed it
 separately. Check that the command "java -version" works and gives 1.8+.)
 
 [QUICK START]
-[*] GUI
+## GUI
+```sh
 $ ./lexparser-gui.sh
-
-[*] Complie
+```
+## Complie
+```sh
 $ javac -classpath ./stanford-parser.jar:./stanford-parser-3.8.0-sources.jar:./stanford-parser-3.8.0-models.jar ParserDemo.java
+```
 
-[*] Execution
+## Execution
+```sh
 $ java -classpath 'stanford-parser.jar:stanford-parser-3.8.0-models.jar:slf4j-api.jar:ejml-0.23.jar:' ParserDemo edu/stanford/nlp/models/lexparser/englishRNN.ser.gz data/test.txt
+```
