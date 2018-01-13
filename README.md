@@ -50,6 +50,8 @@ $ javac -classpath ./stanford-parser.jar:./stanford-parser-3.8.0-sources.jar:./s
 ```sh
 $ java -classpath 'stanford-parser.jar:stanford-parser-3.8.0-models.jar:slf4j-api.jar:ejml-0.23.jar:' ParserDemo edu/stanford/nlp/models/lexparser/englishRNN.ser.gz data/test.txt
 ```
+### Example
+![img](figure/presentation.jpeg)
 
 ### Parse Tree
 ![img](figure/parser-tree.jpeg)
