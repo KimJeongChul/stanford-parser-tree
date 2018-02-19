@@ -27,12 +27,12 @@ public class ParserTreeCondition {
 		private ArrayList<String> dfs_value;
 	    private ArrayList<Integer> dfs_index;
 
-	    private String condition;
+	    private String antecendent;
 	    private String consequence;
 	    private String temp;
 
 	    private boolean isPrint;
-	    private boolean isCondition;
+	    private boolean isAntecedent;
 	    private boolean isPre;
 	    private boolean isPost;
 	    private boolean isLeaf;
@@ -43,19 +43,19 @@ public class ParserTreeCondition {
 			this.dfs_value = new ArrayList<String>();
 			this.dfs_index =  new ArrayList<Integer>();
 
-			this.condition = "";
+			this.antecendent = "";
 			this.consequence = "";
 			this.temp = "";
 
 			this.isPrint = false;
-			this.isCondition = false;
+			this.isAntecedent = false;
 			this.isPre = false;
 			this.isPost = false;
 			this.isLeaf = false;
 			this.isComma = false;
 		}
-		public String getCondition() {
-			return this.condition;
+		public String getAntecedent() {
+			return this.antecendent;
 		}
 
 		public String getConsequence() {
@@ -66,6 +66,10 @@ public class ParserTreeCondition {
 			this.isPrint = isPrint;
 		}
 
+		/*
+			DFS Function
+			One starts at the root and explores as far as possible along each branch before backtracking.
+		*/
 		public void dfsConditionTraverse(Tree node, int idx){
 			Tree[] child = node.children();
 			int len = child.length;
@@ -76,22 +80,36 @@ public class ParserTreeCondition {
 			if(this.isLeaf == true)
 				temp += node.value() + " ";
 
+			/* 
+				First Step : Find out where the SBAR is.
+				If the SBAR is in front of the sentence, isPre will be true.
+				In the opposite case, isPost will be true.
+			*/
 			if(node.value().equals("SBAR")) {
-				this.isCondition = true;
+				this.isAntecedent = true;
 				if(idx == 3) this.isPre = true;
 				else {
 					this.isPost = true;
 					this.consequence = temp;
 				}
 			}
-			if(this.isCondition == true && this.isPre == true && this.isLeaf == true) {
+
+			/*
+				Second Step : Split and Save Antecendent, Consequent
+				Split according to whether the SBAR is in front of or back of the sentence.
+				If the SBAR is in front of the sentence, separate it with Comma or then.
+				In the opposite case, the sentence is divided into SBAR.
+				And then we check node of value IN which is mean preposition or Wh-adverb pharse. 
+			*/
+			if(this.isAntecedent == true && this.isPre == true && this.isLeaf == true) {
 				if(this.isComma == true && !node.value().equals("then")) this.consequence += node.value() + " ";
-				else if(this.isComma == false && !node.value().equals("When") && (!node.value().equals("If")) && (!node.value().equals(","))) this.condition += node.value() + " ";
+				else if(this.isComma == false && !node.value().equals("When") && (!node.value().equals("If")) && (!node.value().equals(","))) this.antecendent += node.value() + " ";
 				if(node.value().equals(",")) this.isComma = true;
 			}
-			if(this.isCondition == true && this.isPost == true && this.isLeaf == true) {
-				if(!node.value().equals("when") && (!node.value().equals("if"))) this.condition += node.value() + " ";
+			if(this.isAntecedent == true && this.isPost == true && this.isLeaf == true) {
+				if(!node.value().equals("when") && (!node.value().equals("if"))) this.antecendent += node.value() + " ";
 			}
+
 			this.dfs_index.add(idx);
 			this.dfs_value.add(node.value());
 			for(int i = 0; i < len; i++) {
@@ -149,11 +167,11 @@ public class ParserTreeCondition {
 			ts2.dfsConditionTraverse(t2, 0);
 
 			System.out.println("[*] " + s1);
-			System.out.println("Condition : " + ts1.getCondition());
+			System.out.println("Antecendent : " + ts1.getAntecedent());
 			System.out.println("Consequence : " + ts1.getConsequence());
   		
 			System.out.println("[*] " + s2);
-			System.out.println("Condition : " + ts2.getCondition());
+			System.out.println("Antecendent : " + ts2.getAntecedent());
 			System.out.println("Consequence : " + ts2.getConsequence());
 
     		System.out.println();
@@ -161,44 +179,13 @@ public class ParserTreeCondition {
  	}
 
  	public static Tree conversionTree(LexicalizedParser lp, GrammaticalStructureFactory gsf, List<HasWord> sentence) {
-	    //System.out.println(sentence);
+	    System.out.println(sentence);
 	    Tree parse = lp.apply(sentence);
-	    //parse.pennPrint();
+	    parse.pennPrint();
 
 	    GrammaticalStructure gs = gsf.newGrammaticalStructure(parse);
 	    Collection tdl = gs.typedDependenciesCCprocessed();
-	    //System.out.println("Tree number of node : " + tdl.size());
-	    //System.out.println("Tree Depth : " + parse.depth());
-
-	    //System.out.println();
+	    
 	    return parse;
-	}
-
-	public static void sentenceCondition(List<HasWord> sentence) {
-		String condition = "";
-		String consequence = "";
-		boolean isCondition = false;
-		boolean isConsequence = false;
-		for(HasWord w : sentence) {
-			String str = w.word();
-			if(str.equals("If")) {
-				isCondition = true;
-				continue;
-			}
-			if(isCondition == true && str.equals(",")) {
-				isCondition = false;
-				isConsequence = true;
-				continue;
-			}
-			if(isCondition == true) {
-				condition += str + " ";
-			}
-			
-			if(isConsequence == true) {
-				consequence += str + " ";
-			}
-		}
-		System.out.println("Condition : " + condition);
-		System.out.println("Consequence : " + consequence);
 	}
 }
