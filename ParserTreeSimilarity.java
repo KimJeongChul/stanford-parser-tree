@@ -162,8 +162,8 @@ public class ParserTreeSimilarity {
       		}else {
     			TreeSimilarity ts1 = new TreeSimilarity(t1);
     			TreeSimilarity ts2 = new TreeSimilarity(t2);
-    			ts1.isPrint(false);
-    			ts2.isPrint(false);
+    			ts1.isPrint(true);
+    			ts2.isPrint(true);
 
     			ArrayList<Integer> t1_dfs = new ArrayList<Integer>(); 
     			ArrayList<Integer> t2_dfs = new ArrayList<Integer>(); 
