@@ -21,7 +21,7 @@ import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
 
 import edu.stanford.nlp.util.*;
 
-public class ParserTreeSimliarity {
+public class ParserTreeSimilarity {
 	public static class TreeSimilarity {
 		private final Tree tree;
 		private ArrayList<String> bfs_value;
@@ -55,8 +55,10 @@ public class ParserTreeSimliarity {
 		public void isPrint(boolean isPrint) {
 			this.isPrint = isPrint;
 		}
-		/* Breadth-first search (BFS) is an algorithm for traversing or searching tree or graph data structures. 
-		It starts at the tree root and explores the neighbor nodes first, before moving to the next level neighbours.
+		/* 
+			Recurrsive BFS Function.
+		   	Breadth-first search (BFS) is an algorithm for traversing or searching tree or graph data structures. 
+			It starts at the tree root and explores the neighbor nodes first, before moving to the next level neighbours.
 		*/
 		public void bfsTraverse(){
 			LinkedList<Tree> queue_value = new LinkedList<Tree>();
@@ -89,6 +91,10 @@ public class ParserTreeSimliarity {
 		    }
 		}
 
+		/*
+			DFS Function
+			One starts at the root and explores as far as possible along each branch before backtracking.
+		*/
 		public void dfsTraverse(Tree node, int idx){
 			Tree[] child = node.children();
 			int len = child.length;
@@ -102,7 +108,6 @@ public class ParserTreeSimliarity {
 			this.dfs_index.add(idx);
 			this.dfs_value.add(node.value());
 			for(int i = 0; i < len; i++) {
-				//if(!child[i].isLeaf()) 
 				this.dfsTraverse(child[i], idx+i);
 			} 
 		}
@@ -143,6 +148,7 @@ public class ParserTreeSimliarity {
 
 	    	String s1 = SentenceUtils.listToString(sentence1);
 	    	String s2 = SentenceUtils.listToString(sentence2);
+
 	    	sentenceList.add(s1);
 	    	sentenceList.add(s2);
 
@@ -161,16 +167,16 @@ public class ParserTreeSimliarity {
 
     			ArrayList<Integer> t1_dfs = new ArrayList<Integer>(); 
     			ArrayList<Integer> t2_dfs = new ArrayList<Integer>(); 
-    			//System.out.println("[*] DFS Tree 1");
+    			System.out.println("[*] DFS Tree 1");
     			ts1.dfsTraverse(t1, 0);
 
-    			//System.out.println("[*] DFS Tree 2");
+    			System.out.println("[*] DFS Tree 2");
     			ts2.dfsTraverse(t2, 0);
     			
-    			//System.out.println("[*] BFS Tree 1");
+    			System.out.println("[*] BFS Tree 1");
     			ts1.bfsTraverse();
 
-    			//System.out.println("[*] BFS Tree 2");
+    			System.out.println("[*] BFS Tree 2");
     			ts2.bfsTraverse();
 
 				ArrayList<String> t1_value = ts1.getBFSValue();
@@ -180,12 +186,13 @@ public class ParserTreeSimliarity {
 				ArrayList<Integer> t2_level = ts2.getBFSLevel();
 
     			System.out.println("\n[*] Compare to level for Tree 1 and Tree 2");
-    			/*
-				* 1) If both of nodes are same level and position, the weight will be 1.
-				* 2) If both of nodes are the same level and different position, the weight is 0.9 -> We think about that using BFS Algorithm.
-				* 3) If both of nodes are the different level, the weight will be 0.45.
-    			*/
 
+    			/*
+    				Level Weight Algorithm
+					 1) If both of nodes are same level and position, the weight will be 1.
+					 2) If both of nodes are the same level and different position, the weight is 0.9 -> We think about that using BFS Algorithm.
+					 3) If both of nodes are the different level, the weight will be 0.45.
+    			*/
     			float equal = 0.0f;
     			boolean isEqual = false;
 				for(int i = 0; i < t1_value.size(); i++ ) {
@@ -215,6 +222,7 @@ public class ParserTreeSimliarity {
 						}
 					}
 				}
+
 				int mean_num_node = (t1_value.size() + t2_value.size()) / 2;
 				int min_num_node = (t1_value.size() > t2_value.size()) ? t2_value.size() : t1_value.size();
 				float simliarity = (equal * 100) / min_num_node;
@@ -226,8 +234,9 @@ public class ParserTreeSimliarity {
     		System.out.println();
 	    }
 		int index = 0;
-		int top = 52;
+		int top = 10;
 	    
+	    // Sorting Ascending.
 	    Map<Float, List<String>> ascend = new TreeMap<Float, List<String>>(hs);
 	    Set set = ascend.entrySet();
 	    Iterator iterator = set.iterator();
@@ -240,6 +249,7 @@ public class ParserTreeSimliarity {
 			index += 1;
 		}
 
+		// Sorting Descending.
 		Map<Float, List<String>> descend = new TreeMap<Float, List<String>>(Collections.reverseOrder());
         descend.putAll(hs);
         Set set2 = descend.entrySet();
@@ -253,9 +263,9 @@ public class ParserTreeSimliarity {
 			System.out.println(me2.getValue());
 			index += 1;
 		}
-
  	}
 
+ 	// Conversion Tree
  	public static Tree conversionTree(LexicalizedParser lp, GrammaticalStructureFactory gsf, List<HasWord> sentence) {
 	    System.out.println(sentence);
 	    Tree parse = lp.apply(sentence);
